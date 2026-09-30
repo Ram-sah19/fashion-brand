@@ -80,7 +80,7 @@ If you prefer to configure the Web Service manually:
    - **Name**: `velora-circle-backend`
    - **Region**: Select the region closest to your users (e.g., Oregon, Frankfurt, Singapore).
    - **Branch**: `main`
-   - **Root Directory**: Leave blank (root).
+   - **Root Directory**: Leave blank (repository root; do not set this to `backend`).
    - **Runtime**: **Node**
    - **Build Command**:
      ```bash
@@ -114,6 +114,11 @@ If you prefer to configure the Web Service manually:
 > **Important:** Do not use `node backend/server.ts` as the start command. This project has
 > separate services under `backend/*`; `server/start-all.js` starts them and exposes the
 > Render `PORT` through the API gateway.
+
+> If the Render log still shows `Running 'node server.ts'` or `Running 'node backend/server.ts'`,
+> update the existing service's **Root Directory** to blank and its **Start Command** to
+> `node server/start-all.js`, then save and redeploy. Existing manually-created services do
+> not automatically adopt changes from `render.yaml`.
 
 ---
 
