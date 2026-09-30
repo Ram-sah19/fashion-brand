@@ -1,2 +1,0 @@
-# API and upload requests are handled by the Cloudflare Worker.
-# The Worker proxies them to Render using RENDER_BACKEND_URL.
