@@ -7,6 +7,10 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
+type WorkerEnv = {
+  RENDER_BACKEND_URL?: string;
+};
+
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
@@ -44,9 +48,43 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+async function proxyBackendRequest(
+  request: Request,
+  env: WorkerEnv,
+): Promise<Response> {
+  const backendUrl = env.RENDER_BACKEND_URL?.replace(/\/+$/, "");
+  if (!backendUrl) {
+    return new Response("RENDER_BACKEND_URL is not configured", {
+      status: 500,
+    });
+  }
+
+  const incomingUrl = new URL(request.url);
+  const targetUrl = `${backendUrl}${incomingUrl.pathname}${incomingUrl.search}`;
+  const headers = new Headers(request.headers);
+  headers.delete("host");
+
+  return fetch(
+    new Request(targetUrl, {
+      method: request.method,
+      headers,
+      body:
+        request.method === "GET" || request.method === "HEAD"
+          ? undefined
+          : request.body,
+      redirect: "manual",
+    }),
+  );
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const pathname = new URL(request.url).pathname;
+      if (pathname.startsWith("/api/") || pathname.startsWith("/uploads/")) {
+        return await proxyBackendRequest(request, env as WorkerEnv);
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
@@ -59,5 +97,4 @@ export default {
     }
   },
 };
-
 

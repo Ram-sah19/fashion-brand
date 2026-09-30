@@ -139,58 +139,58 @@ You should receive:
 
 ---
 
-## Step 2: Deploy the Frontend on Cloudflare Pages
+## Step 2: Deploy the Frontend on Cloudflare Workers
 
-### Option A: Git Integration via Cloudflare Dashboard (Recommended)
+### Option A: Workers Builds via Git integration (Recommended)
 
 1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com).
-2. Go to **Compute (Workers) & Pages** > **Pages** > **Create a project**.
+2. Go to **Workers & Pages** and create a new **Worker** connected to Git.
 3. Choose **Connect to Git** and authorize your GitHub account.
-4. Select the `Veloracircle` repository.
+4. Select the `Ram-sah19/fashion-brand` repository.
 5. In the **Set up builds and deployments** page, specify:
-   - **Project Name**: `velora-circle`
+   - **Worker name**: `velora-circle-frontend`
    - **Production Branch**: `main`
-   - **Framework Preset**: `None` (or `Vite`)
    - **Root Directory**: `frontend`
    - **Build Command**:
      ```bash
      npm run build
      ```
-   - **Build Output Directory**:
+   - **Deploy Command**:
      ```bash
-     dist
+     npx wrangler deploy
      ```
 6. Expand **Environment variables** and add:
 
 | Variable Name | Value |
 |---|---|
 | `NODE_VERSION` | `20` |
-| `NITRO_PRESET` | `cloudflare-pages` |
+| `NITRO_PRESET` | `cloudflare_module` |
 | `VITE_API_URL` | `https://velora-circle-backend.onrender.com` *(Replace with your actual Render URL)* |
+| `VITE_SOCKET_URL` | `https://velora-circle-backend.onrender.com` *(Replace with your actual Render URL)* |
+| `RENDER_BACKEND_URL` | `https://velora-circle-backend.onrender.com` *(Replace with your actual Render URL)* |
 
 7. Click **Save and Deploy**.
 
-Cloudflare Pages will clone the repository, install dependencies, run `npm run build`, and deploy the resulting `dist/` directory including SSR edge workers and static assets.
+Cloudflare Workers Builds will clone the repository, install dependencies, run `npm run build`, and deploy `.output/server/index.mjs` with assets from `.output/public`.
 
 ---
 
-### Step 3: Link Cloudflare Pages `_redirects` to your Render URL
+### Step 3: Configure the Worker backend proxy
 
 To enable seamless same-origin API proxying without CORS restrictions:
 
-1. Open [`frontend/public/_redirects`](../frontend/public/_redirects).
-2. Replace `https://velora-circle-backend.onrender.com` with your exact Render backend URL:
-   ```
-   /api/*  https://your-actual-app.onrender.com/api/:splat  200
-   /uploads/*  https://your-actual-app.onrender.com/uploads/:splat  200
-   ```
-3. Commit and push the change to GitHub:
+1. Set `RENDER_BACKEND_URL` in Worker variables to the exact Render backend URL.
+2. Commit and push the configuration:
    ```bash
-   git add frontend/public/_redirects
-   git commit -m "chore: point Cloudflare proxy to production Render backend"
+   git add frontend
+   git commit -m "chore: configure Cloudflare Workers deployment"
    git push origin main
    ```
-4. Cloudflare Pages will automatically trigger a new deployment.
+3. Workers Builds will run the build and `npx wrangler deploy`.
+
+> Do not use the old Pages `pages_build_output_dir` setting or a Pages deploy command
+> for this Worker project. The repository uses Nitro's `cloudflare_module` preset and
+> `.output/server/index.mjs` as the Worker entrypoint.
 
 ---
 

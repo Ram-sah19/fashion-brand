@@ -1,12 +1,15 @@
-
-# ========================================================
-# Cloudflare Pages / Wrangler Configuration
-# ========================================================
+# Cloudflare Workers Builds / Wrangler Configuration
 
 name = "velora-circle-frontend"
+main = ".output/server/index.mjs"
 
-compatibility_date = "2026-09-28"
-
+compatibility_date = "2026-09-30"
 compatibility_flags = ["nodejs_compat"]
 
-pages_build_output_dir = "dist"
+[assets]
+directory = ".output/public"
+binding = "ASSETS"
+
+# Override this in the Worker dashboard with the actual Render URL.
+[vars]
+RENDER_BACKEND_URL = "https://velora-circle-backend.onrender.com"

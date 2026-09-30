@@ -26,7 +26,7 @@ export default defineConfig(({ command }) => {
       viteReact(),
       command === "build"
         ? nitro({
-            preset: process.env.NITRO_PRESET || "cloudflare-pages",
+          preset: process.env.NITRO_PRESET || "cloudflare_module",
           })
         : undefined,
     ].filter(Boolean),
