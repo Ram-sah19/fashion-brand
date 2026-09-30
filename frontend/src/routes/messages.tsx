@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useMessageReadStatus } from "@/hooks/UseMessageReadStatus";
+import { useMessageReadStatus } from "@/hooks/useMessageReadStatus";
 import { useRealtimeMessages } from "@/hooks/UseRealtimeMessages";
 import { useMarkMessagesAsRead } from "@/hooks/UseMarkMessagesAsRead";
 import { useCall } from "@/hooks/UseCall";
