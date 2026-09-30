@@ -1,0 +1,9 @@
+# Automatically normalize line endings to LF across all operating systems
+* text=auto eol=lf
+
+# Force scripts and Dockerfile to use LF
+*.sh text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+Dockerfile text eol=lf

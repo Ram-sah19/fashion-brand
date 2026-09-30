@@ -1,0 +1,39 @@
+# =======================================================
+# Render Blueprint Specification (Infrastructure-as-Code)
+# Use this blueprint for 1-Click deployment on Render
+# =======================================================
+
+services:
+  - type: web
+    name: velora-circle-backend
+    runtime: node
+    plan: free
+    buildCommand: npm run install:backend && npm run build:backend
+    startCommand: npm run start:backend
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      # Required MongoDB Connection String
+      - key: MONGO_URI
+        sync: false
+      # Automatically generated random secrets
+      - key: JWT_SECRET
+        generateValue: true
+      - key: INTERNAL_SERVICE_SECRET
+        generateValue: true
+      # 32-byte hex key for message encryption (sync: false prompts during deploy)
+      - key: MESSAGE_ENCRYPTION_KEY
+        sync: false
+      # Email configuration for OTP and meeting reminders
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: EMAIL_FROM
+        value: Velora Circle <veloracircle1@gmail.com>
