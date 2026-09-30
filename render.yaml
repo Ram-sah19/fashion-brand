@@ -9,7 +9,7 @@ services:
     runtime: node
     plan: free
     buildCommand: npm run install:backend && npm run build:backend
-    startCommand: npm run start:backend
+    startCommand: node server/start-all.js
     healthCheckPath: /health
     autoDeploy: true
     envVars:

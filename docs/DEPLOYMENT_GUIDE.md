@@ -88,7 +88,7 @@ If you prefer to configure the Web Service manually:
      ```
    - **Start Command**:
      ```bash
-     npm run start:backend
+     node server/start-all.js
      ```
    - **Health Check Path**: `/health`
    - **Plan**: **Free** (or Starter for 24/7 uptime without spin-downs).
@@ -110,6 +110,10 @@ If you prefer to configure the Web Service manually:
 
 5. Click **Create Web Service**.
 6. When deployment finishes, copy your Render URL (e.g. `https://velora-circle-backend.onrender.com`).
+
+> **Important:** Do not use `node backend/server.ts` as the start command. This project has
+> separate services under `backend/*`; `server/start-all.js` starts them and exposes the
+> Render `PORT` through the API gateway.
 
 ---
 
