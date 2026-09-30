@@ -1,9 +1,2 @@
-# ========================================================
-# Cloudflare Pages Proxy / Rewrites
-# Proxies API and upload requests to the Render backend service.
-# Replace https://velora-circle-backend.onrender.com with your
-# actual Render backend service URL.
-# ========================================================
-
-/api/*  https://velora-circle-backend.onrender.com/api/:splat  200
-/uploads/*  https://velora-circle-backend.onrender.com/uploads/:splat  200
+# API and upload requests are handled by the Cloudflare Worker.
+# The Worker proxies them to Render using RENDER_BACKEND_URL.
